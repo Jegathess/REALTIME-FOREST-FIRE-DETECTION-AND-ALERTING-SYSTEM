@@ -1,0 +1,1 @@
+ Developed a real-time forest fire detection system leveraging IoT sensors, including temperature, Flame and smoke detectors. The system integrates with a mobile app to enable remote monitoring and provide instant alerts for rapid response.
