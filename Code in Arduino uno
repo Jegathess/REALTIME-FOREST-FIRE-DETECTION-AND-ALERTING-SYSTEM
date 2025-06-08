@@ -1,0 +1,99 @@
+#include<LiquidCrystal.h>
+LiquidCrystal lcd(13,12,11,10,9,8);
+#include <Adafruit_Sensor.h>
+#include "DHT.h"
+#define DHTPIN A5
+#define DHTTYPE DHT11
+
+int f,t,h,m,G;
+DHT dht(DHTPIN, DHTTYPE);
+
+void setup()
+{
+  dht.begin();
+  lcd.begin(16,2);
+  Serial.begin(9600);
+  pinMode(3,INPUT);
+  pinMode(5,INPUT);
+  pinMode(2,OUTPUT);
+
+  lcd.setCursor(0,0);
+  lcd.print("   Forest Fire     ");
+  lcd.setCursor(0,1);
+  lcd.print("    Detection     ");
+  delay(2000);
+  lcd.clear();
+}
+
+void loop()
+{
+  f=digitalRead(3);
+  if(f==LOW)
+  {
+    lcd.setCursor(0,0);
+    lcd.print("Fire:H");
+    digitalWrite(2,HIGH);
+    Serial.print("F");
+    delay(500);
+  }
+  else
+  {
+    lcd.setCursor(0,0);
+    lcd.print("Fire:L");
+    digitalWrite(2,LOW);
+    Serial.print("f");
+    delay(500);
+  }
+
+  G=digitalRead(5);
+  if(G==LOW)
+  {
+    lcd.setCursor(7,0);
+    lcd.print("Gas:H");
+    digitalWrite(2,HIGH);
+    Serial.print("G");
+    delay(500);
+  }
+  else
+  {
+    lcd.setCursor(7,0);
+    lcd.print("Gas:L");
+    digitalWrite(2,LOW);
+    Serial.print("g");
+    delay(500);
+  }
+
+  h = dht.readHumidity();
+  t = dht.readTemperature();
+
+  if (isnan(h) || isnan(t))
+  {
+    Serial.println("Failed to read from DHT sensor!");
+    return;
+  }
+
+  lcd.setCursor(0,1);
+  lcd.print("Temperature:");
+  lcd.setCursor(12,1);
+  lcd.print(t);
+  lcd.print((char) 223);
+  lcd.print("C");
+  Serial.print('T');
+  Serial.print(t);
+  delay(300);
+
+  if(t > 35)
+  {
+    lcd.setCursor(13,0);
+    lcd.print("T:H");
+    digitalWrite(2,HIGH);
+    delay(500);
+  }
+  else
+  {
+    lcd.setCursor(13,0);
+    lcd.print("T:L");
+    digitalWrite(2,LOW);
+    delay(500);
+  }
+}
